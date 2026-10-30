@@ -1,0 +1,101 @@
+package lat.pam.kopidannyemil
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import lat.pam.kopidannyemil.ui.*
+import lat.pam.kopidannyemil.ui.theme.KopiDanNyemilTheme
+
+enum class Screen { Splash, SignUp, Login, Register, Home, Order, Profile, Confirm }
+
+class AppState {
+    var screen by mutableStateOf(Screen.Splash)
+    val users = mutableStateListOf(User("Keira Arina", "Keira", "123abc"))
+    var currentUser by mutableStateOf<User?>(null)
+    val cart = mutableStateMapOf<Int, Int>()
+
+    val cartCount get() = cart.values.sum()
+
+    fun add(item: MenuItem) { cart[item.id] = (cart[item.id] ?: 0) + 1 }
+    fun remove(item: MenuItem) {
+        val q = (cart[item.id] ?: 0) - 1
+        if (q <= 0) cart.remove(item.id) else cart[item.id] = q
+    }
+    fun logout() { currentUser = null; cart.clear(); screen = Screen.SignUp }
+}
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent { KopiDanNyemilTheme { Surface(Modifier.fillMaxSize()) { KopiApp() } } }
+    }
+}
+
+@Composable
+fun KopiApp() {
+    val state = remember { AppState() }
+    val name = state.currentUser?.fullName ?: ""
+
+    BackHandler(enabled = state.screen != Screen.Splash) {
+        state.screen = when (state.screen) {
+            Screen.SignUp -> Screen.Splash
+            Screen.Login, Screen.Register -> Screen.SignUp
+            Screen.Order, Screen.Profile -> Screen.Home
+            Screen.Confirm -> Screen.Home
+            else -> state.screen
+        }
+    }
+
+    when (state.screen) {
+        Screen.Splash -> SplashScreen { state.screen = Screen.SignUp }
+        Screen.SignUp -> SignUpScreen(
+            onRegister = { state.screen = Screen.Register },
+            onLogin = { state.screen = Screen.Login }
+        )
+        Screen.Login -> LoginScreen(state.users, onSuccess = {
+            state.currentUser = it; state.screen = Screen.Home
+        }, onBack = { state.screen = Screen.SignUp })
+        Screen.Register -> RegisterScreen(state.users, onSuccess = {
+            state.users.add(it); state.currentUser = it; state.screen = Screen.Home
+        }, onBack = { state.screen = Screen.SignUp })
+        Screen.Confirm -> ConfirmScreen(name) {
+            state.cart.clear(); state.screen = Screen.Home
+        }
+        Screen.Home, Screen.Order, Screen.Profile -> {
+            val tab = when (state.screen) {
+                Screen.Order -> Tab.Order
+                Screen.Profile -> Tab.Profile
+                else -> Tab.Home
+            }
+            Scaffold(bottomBar = {
+                BottomBar(tab, state.cartCount) {
+                    state.screen = when (it) {
+                        Tab.Home -> Screen.Home
+                        Tab.Order -> Screen.Order
+                        Tab.Profile -> Screen.Profile
+                    }
+                }
+            }) { pad ->
+                Surface(Modifier.padding(pad)) {
+                    when (tab) {
+                        Tab.Home -> HomeScreen(name, state.cart, onAdd = state::add)
+                        Tab.Order -> OrderScreen(state.cart, name, onRemove = state::remove,
+                            onSubmit = { state.screen = Screen.Confirm })
+                        Tab.Profile -> ProfileScreen(name, onSave = { n ->
+                            state.currentUser = state.currentUser?.copy(fullName = n)
+                        }, onLogout = state::logout)
+                    }
+                }
+            }
+        }
+    }
+}
