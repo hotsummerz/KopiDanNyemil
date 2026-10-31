@@ -55,8 +55,8 @@ fun SignUpScreen(onRegister: () -> Unit, onLogin: () -> Unit) {
 @Composable
 fun LoginScreen(
     users: List<User>,
-    onSuccess: (User) -> Unit,
     onBack: () -> Unit,
+    onSuccess: (User) -> Unit,
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -85,8 +85,8 @@ fun LoginScreen(
 @Composable
 fun RegisterScreen(
     users: List<User>,
-    onSuccess: (User) -> Unit,
     onBack: () -> Unit,
+    onSuccess: (User) -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }

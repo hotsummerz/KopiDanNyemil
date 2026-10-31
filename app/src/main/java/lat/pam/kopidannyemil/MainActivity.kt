@@ -66,27 +66,24 @@ fun KopiApp() {
 
         Screen.SignUp -> SignUpScreen(
             onRegister = { state.screen = Screen.Register },
-            onLogin = { state.screen = Screen.Login },
-        )
+        ) { state.screen = Screen.Login }
 
         Screen.Login -> LoginScreen(
             users = state.users,
-            onSuccess = { user ->
-                state.currentUser = user
-                state.screen = Screen.Home
-            },
             onBack = { state.screen = Screen.SignUp },
-        )
+        ) { user ->
+            state.currentUser = user
+            state.screen = Screen.Home
+        }
 
         Screen.Register -> RegisterScreen(
             users = state.users,
-            onSuccess = { user ->
-                state.users.add(user)
-                state.currentUser = user
-                state.screen = Screen.Home
-            },
             onBack = { state.screen = Screen.SignUp },
-        )
+        ) { user ->
+            state.users.add(user)
+            state.currentUser = user
+            state.screen = Screen.Home
+        }
 
         Screen.Confirm -> ConfirmScreen {
             state.cart.clear()
@@ -118,8 +115,7 @@ fun KopiApp() {
                             cart = state.cart,
                             defaultName = name,
                             onRemove = state::remove,
-                            onSubmit = { state.screen = Screen.Confirm },
-                        )
+                        ) { state.screen = Screen.Confirm }
 
                         Tab.Profile -> ProfileScreen(
                             userName = name,

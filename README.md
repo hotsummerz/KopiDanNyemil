@@ -7,7 +7,7 @@
 [![Min SDK](https://img.shields.io/badge/Min%20SDK-24%20(Android%207.0)-informational.svg)](https://developer.android.com)
 [![Target SDK](https://img.shields.io/badge/Target%20SDK-37-success.svg)](https://developer.android.com)
 
-Aplikasi pemesanan makanan dan minuman berbasis Android yang dibangun secara penuh menggunakan **Jetpack Compose** dan **Material 3**. Aplikasi ini dirancang sebagai proyek latihan dalam mata kuliah **Pengembangan Aplikasi Mobile (PAM)** untuk mempraktikkan konsep *declarative UI*, pengelolaan *state* (State Hoisting), arsitektur navigasi, serta interaksi pengguna yang modern.
+Aplikasi pemesanan makanan dan minuman berbasis Android yang dibangun secara penuh menggunakan **Jetpack Compose** dan **Material 3**. Aplikasi ini dirancang untuk memenuhi Tugas UTS mata kuliah **Pengembangan Aplikasi Mobile (PAM)** untuk mempraktikkan konsep *declarative UI*, pengelolaan *state* (State Hoisting), arsitektur navigasi, serta interaksi pengguna yang modern.
 
 ---
 
@@ -203,10 +203,19 @@ app/build/outputs/apk/debug/app-debug.apk
 
 ## 📝 Catatan Tugas Kuliah
 
-Proyek ini disusun untuk memenuhi tugas perkuliahan:
+Proyek ini disusun untuk memenuhi **Tugas Ujian Tengah Semester (UTS)**:
 - **Mata Kuliah**: Pengembangan Aplikasi Mobile (PAM)
-- **Program Studi**: Teknik Informatika (IF) - Semester 5
+- **Program Studi**: Teknik Informatika - Semester 5
 - **Topik**: Implementasi UI Modern dengan Jetpack Compose, Navigasi Multi-Screen, State Management, dan Form Validation pada Android.
+
+### 👤 Identitas Mahasiswa
+
+| Informasi | Keterangan |
+| :--- | :--- |
+| **Nama Lengkap** | Keira Arina Khalisha |
+| **NIM** | 1247050056 |
+| **Kelas** | IF B |
+| **Dosen Pengampu** | H.,Aldy Rialdy Atmadja,M.T |
 
 ### 📋 Pemenuhan Ketentuan Tugas
 
