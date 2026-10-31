@@ -45,6 +45,8 @@ fun AppField(
     password: Boolean = false,
     singleLine: Boolean = true,
     minLines: Int = 1,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = if (password) PasswordVisualTransformation() else VisualTransformation.None,
 ) {
     OutlinedTextField(
         value = value,
@@ -54,7 +56,8 @@ fun AppField(
         minLines = minLines,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        visualTransformation = if (password) PasswordVisualTransformation() else VisualTransformation.None,
+        visualTransformation = visualTransformation,
+        trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(
             keyboardType = if (password) KeyboardType.Password else KeyboardType.Text,
         ),

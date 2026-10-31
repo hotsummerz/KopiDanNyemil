@@ -39,5 +39,13 @@ val dummyMenu = listOf(
     MenuItem(10, "Dubai Chewy Cookie", "Marshmallow, bubuk kakao, pistachio", 30_000, "🧆", MenuCategory.DESSERT),
 )
 
+data class OrderReceipt(
+    val recipientName: String,
+    val address: String,
+    val landmark: String,
+    val totalAmount: Int,
+    val itemCount: Int,
+)
+
 fun rupiah(value: Int): String =
     "Rp " + String.format(Locale.forLanguageTag("id-ID"), "%,d", value)

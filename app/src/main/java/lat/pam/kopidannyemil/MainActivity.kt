@@ -7,10 +7,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.launch
 import lat.pam.kopidannyemil.ui.*
 import lat.pam.kopidannyemil.ui.theme.KopiDanNyemilTheme
 
@@ -21,6 +21,7 @@ class AppState {
     val users = mutableStateListOf(User("Keira Arina", "Keira", "123abc"))
     var currentUser by mutableStateOf<User?>(null)
     val cart = mutableStateMapOf<Int, Int>()
+    var lastReceipt by mutableStateOf<OrderReceipt?>(null)
 
     val cartCount get() = cart.values.sum()
 
@@ -34,6 +35,7 @@ class AppState {
     fun logout() {
         currentUser = null
         cart.clear()
+        lastReceipt = null
         screen = Screen.SignUp
     }
 }
@@ -85,8 +87,9 @@ fun KopiApp() {
             state.screen = Screen.Home
         }
 
-        Screen.Confirm -> ConfirmScreen {
+        Screen.Confirm -> ConfirmScreen(receipt = state.lastReceipt) {
             state.cart.clear()
+            state.lastReceipt = null
             state.screen = Screen.Home
         }
 
@@ -96,7 +99,11 @@ fun KopiApp() {
                 Screen.Profile -> Tab.Profile
                 else -> Tab.Home
             }
+            val snackbarHostState = remember { SnackbarHostState() }
+            val scope = rememberCoroutineScope()
+
             Scaffold(
+                snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
                 bottomBar = {
                     BottomBar(selected = tab, cartCount = state.cartCount) { picked ->
                         state.screen = when (picked) {
@@ -109,18 +116,40 @@ fun KopiApp() {
             ) { paddingValues ->
                 Surface(Modifier.padding(paddingValues)) {
                     when (tab) {
-                        Tab.Home -> HomeScreen(name, state.cart, onAdd = state::add)
+                        Tab.Home -> HomeScreen(name, state.cart) { item ->
+                            state.add(item)
+                            scope.launch {
+                                snackbarHostState.currentSnackbarData?.dismiss()
+                                snackbarHostState.showSnackbar(
+                                    message = "+1 ${item.name} ditambahkan",
+                                    duration = SnackbarDuration.Short,
+                                )
+                            }
+                        }
 
                         Tab.Order -> OrderScreen(
                             cart = state.cart,
                             defaultName = name,
+                            onAdd = state::add,
                             onRemove = state::remove,
-                        ) { state.screen = Screen.Confirm }
+                        ) { receipt ->
+                            state.lastReceipt = receipt
+                            state.screen = Screen.Confirm
+                        }
 
                         Tab.Profile -> ProfileScreen(
-                            userName = name,
-                            onSave = { fullName ->
-                                state.currentUser = state.currentUser?.copy(fullName = fullName)
+                            user = state.currentUser,
+                            existingUsers = state.users,
+                            onSave = { fullName, newUsername ->
+                                val oldUser = state.currentUser
+                                val updatedUser = oldUser?.copy(fullName = fullName, username = newUsername)
+                                if ((oldUser != null) && (updatedUser != null)) {
+                                    val index = state.users.indexOf(oldUser)
+                                    if (index != -1) {
+                                        state.users[index] = updatedUser
+                                    }
+                                    state.currentUser = updatedUser
+                                }
                             },
                             onLogout = state::logout,
                         )
