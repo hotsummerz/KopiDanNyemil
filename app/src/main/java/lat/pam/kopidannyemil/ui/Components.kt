@@ -33,7 +33,7 @@ fun OutlineButton(text: String, onClick: () -> Unit) {
         modifier = Modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(1.dp, Ink),
-        colors = ButtonDefaults.outlinedButtonColors(contentColor = Ink)
+        colors = ButtonDefaults.outlinedButtonColors(contentColor = Ink),
     ) { Text(text, fontWeight = FontWeight.Bold) }
 }
 
@@ -44,7 +44,7 @@ fun AppField(
     label: String,
     password: Boolean = false,
     singleLine: Boolean = true,
-    minLines: Int = 1
+    minLines: Int = 1,
 ) {
     OutlinedTextField(
         value = value,
@@ -55,7 +55,9 @@ fun AppField(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         visualTransformation = if (password) PasswordVisualTransformation() else VisualTransformation.None,
-        keyboardOptions = KeyboardOptions(keyboardType = if (password) KeyboardType.Password else KeyboardType.Text)
+        keyboardOptions = KeyboardOptions(
+            keyboardType = if (password) KeyboardType.Password else KeyboardType.Text,
+        ),
     )
 }
 

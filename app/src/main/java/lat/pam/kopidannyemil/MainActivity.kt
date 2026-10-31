@@ -25,11 +25,17 @@ class AppState {
     val cartCount get() = cart.values.sum()
 
     fun add(item: MenuItem) { cart[item.id] = (cart[item.id] ?: 0) + 1 }
+
     fun remove(item: MenuItem) {
-        val q = (cart[item.id] ?: 0) - 1
-        if (q <= 0) cart.remove(item.id) else cart[item.id] = q
+        val qty = (cart[item.id] ?: 0) - 1
+        if (qty <= 0) cart.remove(item.id) else cart[item.id] = qty
     }
-    fun logout() { currentUser = null; cart.clear(); screen = Screen.SignUp }
+
+    fun logout() {
+        currentUser = null
+        cart.clear()
+        screen = Screen.SignUp
+    }
 }
 
 class MainActivity : ComponentActivity() {
@@ -57,42 +63,71 @@ fun KopiApp() {
 
     when (state.screen) {
         Screen.Splash -> SplashScreen { state.screen = Screen.SignUp }
+
         Screen.SignUp -> SignUpScreen(
             onRegister = { state.screen = Screen.Register },
-            onLogin = { state.screen = Screen.Login }
+            onLogin = { state.screen = Screen.Login },
         )
-        Screen.Login -> LoginScreen(state.users, onSuccess = {
-            state.currentUser = it; state.screen = Screen.Home
-        }, onBack = { state.screen = Screen.SignUp })
-        Screen.Register -> RegisterScreen(state.users, onSuccess = {
-            state.users.add(it); state.currentUser = it; state.screen = Screen.Home
-        }, onBack = { state.screen = Screen.SignUp })
-        Screen.Confirm -> ConfirmScreen(name) {
-            state.cart.clear(); state.screen = Screen.Home
+
+        Screen.Login -> LoginScreen(
+            users = state.users,
+            onSuccess = { user ->
+                state.currentUser = user
+                state.screen = Screen.Home
+            },
+            onBack = { state.screen = Screen.SignUp },
+        )
+
+        Screen.Register -> RegisterScreen(
+            users = state.users,
+            onSuccess = { user ->
+                state.users.add(user)
+                state.currentUser = user
+                state.screen = Screen.Home
+            },
+            onBack = { state.screen = Screen.SignUp },
+        )
+
+        Screen.Confirm -> ConfirmScreen {
+            state.cart.clear()
+            state.screen = Screen.Home
         }
+
         Screen.Home, Screen.Order, Screen.Profile -> {
             val tab = when (state.screen) {
                 Screen.Order -> Tab.Order
                 Screen.Profile -> Tab.Profile
                 else -> Tab.Home
             }
-            Scaffold(bottomBar = {
-                BottomBar(tab, state.cartCount) {
-                    state.screen = when (it) {
-                        Tab.Home -> Screen.Home
-                        Tab.Order -> Screen.Order
-                        Tab.Profile -> Screen.Profile
+            Scaffold(
+                bottomBar = {
+                    BottomBar(selected = tab, cartCount = state.cartCount) { picked ->
+                        state.screen = when (picked) {
+                            Tab.Home -> Screen.Home
+                            Tab.Order -> Screen.Order
+                            Tab.Profile -> Screen.Profile
+                        }
                     }
-                }
-            }) { pad ->
-                Surface(Modifier.padding(pad)) {
+                },
+            ) { paddingValues ->
+                Surface(Modifier.padding(paddingValues)) {
                     when (tab) {
                         Tab.Home -> HomeScreen(name, state.cart, onAdd = state::add)
-                        Tab.Order -> OrderScreen(state.cart, name, onRemove = state::remove,
-                            onSubmit = { state.screen = Screen.Confirm })
-                        Tab.Profile -> ProfileScreen(name, onSave = { n ->
-                            state.currentUser = state.currentUser?.copy(fullName = n)
-                        }, onLogout = state::logout)
+
+                        Tab.Order -> OrderScreen(
+                            cart = state.cart,
+                            defaultName = name,
+                            onRemove = state::remove,
+                            onSubmit = { state.screen = Screen.Confirm },
+                        )
+
+                        Tab.Profile -> ProfileScreen(
+                            userName = name,
+                            onSave = { fullName ->
+                                state.currentUser = state.currentUser?.copy(fullName = fullName)
+                            },
+                            onLogout = state::logout,
+                        )
                     }
                 }
             }

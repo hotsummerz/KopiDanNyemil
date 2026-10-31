@@ -4,6 +4,12 @@ import java.util.Locale
 
 data class User(val fullName: String, val username: String, val password: String)
 
+fun User.matches(inputUsername: String, inputPassword: String): Boolean =
+    (username.equals(inputUsername.trim(), ignoreCase = true)) && (password == inputPassword)
+
+fun User.hasSameUsername(inputUsername: String): Boolean =
+    username.equals(inputUsername.trim(), ignoreCase = true)
+
 enum class MenuCategory(val displayName: String) {
     COFFEE("Kopi"),
     TEA("Teh"),
@@ -17,7 +23,7 @@ data class MenuItem(
     val description: String,
     val price: Int,
     val emoji: String,
-    val category: MenuCategory = MenuCategory.COFFEE
+    val category: MenuCategory = MenuCategory.COFFEE,
 )
 
 val dummyMenu = listOf(
@@ -30,7 +36,7 @@ val dummyMenu = listOf(
     MenuItem(7, "NYC Cookie", "Tebal, padat, lumer", 17_000, "🍪", MenuCategory.DESSERT),
     MenuItem(8, "Jasmine Tea", "Diramu dengan bunga melati", 8_000, "🫖", MenuCategory.TEA),
     MenuItem(9, "Gelato", "Susu, krim, gula", 15_000, "🍨", MenuCategory.DESSERT),
-    MenuItem(10, "Dubai Chewy Cookie", "Marshmallow, bubuk kakao, pistachio", 30_000, "🍪", MenuCategory.DESSERT),
+    MenuItem(10, "Dubai Chewy Cookie", "Marshmallow, bubuk kakao, pistachio", 30_000, "🧆", MenuCategory.DESSERT),
 )
 
 fun rupiah(value: Int): String =

@@ -43,16 +43,16 @@ fun BottomBar(selected: Tab, cartCount: Int, onSelect: (Tab) -> Unit) {
                 selected = tab == selected,
                 onClick = { onSelect(tab) },
                 icon = {
-                    if (tab == Tab.Order && cartCount > 0) {
-                        BadgedBox(badge = { Badge { Text("$cartCount") } }) { Icon(tab.icon, tab.label) }
+                    if ((tab == Tab.Order) && (cartCount > 0)) {
+                        BadgedBox(badge = { Badge { Text(cartCount.toString()) } }) { Icon(tab.icon, tab.label) }
                     } else Icon(tab.icon, tab.label)
                 },
                 label = { Text(tab.label) },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Color.White,
                     selectedTextColor = Ink,
-                    indicatorColor = Ink
-                )
+                    indicatorColor = Ink,
+                ),
             )
         }
     }
@@ -64,7 +64,7 @@ fun HomeScreen(userName: String, cart: Map<Int, Int>, onAdd: (MenuItem) -> Unit)
     LazyColumn(
         Modifier.fillMaxSize().padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(vertical = 24.dp)
+        contentPadding = PaddingValues(vertical = 24.dp),
     ) {
         item {
             Text("Halo, $userName", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
@@ -72,7 +72,7 @@ fun HomeScreen(userName: String, cart: Map<Int, Int>, onAdd: (MenuItem) -> Unit)
             Text("Makanan & Minuman", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         }
         items(dummyMenu) { item ->
-            MenuCard(item, cart[item.id] ?: 0, onAdd = { onAdd(item) })
+            MenuCard(item, cart[item.id] ?: 0) { onAdd(item) }
         }
     }
 }
@@ -82,12 +82,12 @@ private fun MenuCard(item: MenuItem, qty: Int, onAdd: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = PeachSoft),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
                 Modifier.size(64.dp).clip(RoundedCornerShape(12.dp)).background(Peach),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) { Text(item.emoji, fontSize = 30.sp) }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
@@ -97,9 +97,9 @@ private fun MenuCard(item: MenuItem, qty: Int, onAdd: () -> Unit) {
             }
             FilledIconButton(
                 onClick = onAdd,
-                colors = IconButtonDefaults.filledIconButtonColors(containerColor = Ink)
+                colors = IconButtonDefaults.filledIconButtonColors(containerColor = Ink),
             ) {
-                if (qty > 0) Text("$qty", color = Color.White) else Icon(Icons.Filled.Add, "Tambah", tint = Color.White)
+                if (qty > 0) Text(qty.toString(), color = Color.White) else Icon(Icons.Filled.Add, "Tambah", tint = Color.White)
             }
         }
     }
@@ -108,7 +108,7 @@ private fun MenuCard(item: MenuItem, qty: Int, onAdd: () -> Unit) {
 @Composable
 fun ProfileScreen(userName: String, onSave: (String) -> Unit, onLogout: () -> Unit) {
     var name by remember(userName) { mutableStateOf(userName) }
-    var saved by remember { mutableStateOf(false) }
+    var saved by remember { mutableStateOf(value = false) }
     Column(Modifier.fillMaxSize().padding(24.dp).verticalScroll(rememberScrollState())) {
         Text("Halo, $userName", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
         Spacer(Modifier.height(16.dp))
@@ -129,14 +129,17 @@ fun OrderScreen(
     cart: Map<Int, Int>,
     defaultName: String,
     onRemove: (MenuItem) -> Unit,
-    onSubmit: () -> Unit
+    onSubmit: () -> Unit,
 ) {
     var fullName by remember(defaultName) { mutableStateOf(defaultName) }
     var address by remember { mutableStateOf("") }
     var landmark by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
-    val lines = dummyMenu.filter { (cart[it.id] ?: 0) > 0 }
-    val total = lines.sumOf { it.price * (cart[it.id] ?: 0) }
+    val lines = dummyMenu.mapNotNull { item ->
+        val qty = cart[item.id] ?: 0
+        if (qty > 0) item to qty else null
+    }
+    val total = lines.sumOf { (item, qty) -> item.price * qty }
 
     Column(Modifier.fillMaxSize().padding(24.dp).verticalScroll(rememberScrollState())) {
         Text("Alamat", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
@@ -151,11 +154,11 @@ fun OrderScreen(
         if (lines.isEmpty()) {
             Text("Keranjang kosong. Pilih menu di Home dulu.", style = MaterialTheme.typography.bodySmall)
         } else {
-            lines.forEach { m ->
+            lines.forEach { (item, qty) ->
                 Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("${m.emoji} ${m.name} x${cart[m.id]}", Modifier.weight(1f))
-                    Text(rupiah(m.price * (cart[m.id] ?: 0)))
-                    TextButton(onClick = { onRemove(m) }) { Text("−") }
+                    Text("${item.emoji} ${item.name} x$qty", Modifier.weight(1f))
+                    Text(rupiah(item.price * qty))
+                    TextButton(onClick = { onRemove(item) }) { Text("−") }
                 }
             }
             HorizontalDivider(Modifier.padding(vertical = 8.dp))
@@ -175,23 +178,20 @@ fun OrderScreen(
 }
 
 @Composable
-fun ConfirmScreen(userName: String, onOk: () -> Unit) {
+fun ConfirmScreen(onOk: () -> Unit) {
     Column(
         Modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(Modifier.height(48.dp))
-        Text("Halo, $userName", style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.ExtraBold, modifier = Modifier.align(Alignment.Start))
         Spacer(Modifier.weight(1f))
         Box(
             Modifier.size(110.dp).clip(CircleShape).background(MintOk),
-            contentAlignment = Alignment.Center
-        ) { Text("OK", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF0B7A3E)) }
+            contentAlignment = Alignment.Center,
+        ) { Text("✅", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF0B7A3E)) }
         Spacer(Modifier.height(24.dp))
         Text(
-            "Terima kasih sudah memesan\ntunggu sebentar kurir kami akan\nsegera mengantarkan pesananmu!",
-            textAlign = TextAlign.Center
+            "Terima kasih!\nKurir kami akan segera mengantar pesananmu :)",
+            textAlign = TextAlign.Center,
         )
         Spacer(Modifier.weight(1f))
         PrimaryButton("Oke", onClick = onOk)

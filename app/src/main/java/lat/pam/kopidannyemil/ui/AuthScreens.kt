@@ -15,18 +15,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import lat.pam.kopidannyemil.User
+import lat.pam.kopidannyemil.hasSameUsername
+import lat.pam.kopidannyemil.matches
 import lat.pam.kopidannyemil.ui.theme.Peach
 
 @Composable
 fun SplashScreen(onStart: () -> Unit) {
     Column(
         Modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.weight(1f))
         Box(
             Modifier.size(120.dp).clip(CircleShape).background(Peach),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) { Text("☕", fontSize = 56.sp) }
         Spacer(Modifier.height(24.dp))
         Text("Kopi dan Nyemil", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
@@ -54,7 +56,7 @@ fun SignUpScreen(onRegister: () -> Unit, onLogin: () -> Unit) {
 fun LoginScreen(
     users: List<User>,
     onSuccess: (User) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -72,8 +74,8 @@ fun LoginScreen(
         ErrorText(error)
         Spacer(Modifier.height(24.dp))
         PrimaryButton("Login") {
-            val user = users.firstOrNull { u -> u.username == username.trim() && u.password == password }
-            if (user != null) onSuccess(user) else error = "Username atau password salah"
+            val match = users.firstOrNull { it.matches(username, password) }
+            if (match != null) onSuccess(match) else error = "Username atau password salah"
         }
         Spacer(Modifier.height(12.dp))
         OutlineButton("Kembali", onClick = onBack)
@@ -84,7 +86,7 @@ fun LoginScreen(
 fun RegisterScreen(
     users: List<User>,
     onSuccess: (User) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -105,10 +107,10 @@ fun RegisterScreen(
         Spacer(Modifier.height(24.dp))
         PrimaryButton("Register") {
             when {
-                name.isBlank() || username.isBlank() || password.isBlank() ->
+                (name.isBlank() || username.isBlank() || password.isBlank()) ->
                     error = "Semua field wajib diisi"
                 password.length < 6 -> error = "Password minimal 6 karakter"
-                users.any { it.username == username.trim() } -> error = "Username sudah dipakai"
+                users.any { it.hasSameUsername(username) } -> error = "Username sudah dipakai"
                 else -> onSuccess(User(name.trim(), username.trim(), password))
             }
         }
