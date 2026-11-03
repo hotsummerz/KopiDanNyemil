@@ -113,7 +113,7 @@ fun HomeScreen(userName: String, cart: Map<Int, Int>, onAdd: (MenuItem) -> Unit)
                 }
             }
         }
-        items(filteredMenu) { item ->
+        items(filteredMenu, key = { it.id }) { item ->
             MenuCard(item, cart[item.id] ?: 0) { onAdd(item) }
         }
     }

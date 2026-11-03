@@ -57,12 +57,12 @@ Aplikasi pemesanan makanan dan minuman berbasis Android yang dibangun secara pen
 
 Berikut adalah dokumentasi antarmuka untuk seluruh 8 tampilan yang diimplementasikan sesuai ketentuan tugas:
 
-| 1. Splash / Welcome | 2. Sign Up Landing | 3. Login User | 4. Register |
-| :---: | :---: | :---: | :---: |
+|                           1. Splash / Welcome                           |                            2. Sign Up Landing                            |                             3. Login User                             |                                 4. Register                                 |
+|:-----------------------------------------------------------------------:|:------------------------------------------------------------------------:|:---------------------------------------------------------------------:|:---------------------------------------------------------------------------:|
 | <img src="screenshots/01_splash.png" width="220" alt="Splash Screen" /> | <img src="screenshots/02_signup.png" width="220" alt="Sign Up Screen" /> | <img src="screenshots/03_login.png" width="220" alt="Login Screen" /> | <img src="screenshots/04_register.png" width="220" alt="Register Screen" /> |
 
-| 5. Home (Katalog Menu) | 6. Alamat & Keranjang | 7. Konfirmasi Pesanan | 8. Profil Pengguna |
-| :---: | :---: | :---: | :---: |
+|                       5. Home (Katalog Menu)                        |                                      6. Alamat & Keranjang                                       |                              7. Konfirmasi Pesanan                               |                            8. Profil Pengguna                             |
+|:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------:|:-------------------------------------------------------------------------:|
 | <img src="screenshots/05_home.png" width="220" alt="Home Screen" /> | <img src="screenshots/06_alamat_order.png" width="220" alt="Alamat Pengiriman & Order Screen" /> | <img src="screenshots/07_konfirmasi.png" width="220" alt="Konfirmasi Pesanan" /> | <img src="screenshots/08_profile.png" width="220" alt="Profile Screen" /> |
 
 ---
@@ -135,10 +135,10 @@ stateDiagram-v2
 
 Untuk memudahkan proses pengujian dan evaluasi, akun demo berikut sudah terdaftar di dalam aplikasi:
 
-| Parameter | Kredensial |
-| :--- | :--- |
-| **Username** | `Keira` |
-| **Password** | `123abc` |
+| Parameter    | Kredensial |
+|:-------------|:-----------|
+| **Username** | `Keira`    |
+| **Password** | `123abc`   |
 
 > **Catatan:** Anda juga dapat menggunakan fitur **Register** untuk mendaftarkan akun baru dengan data bebas saat aplikasi berjalan.
 
@@ -202,24 +202,24 @@ app/build/outputs/apk/debug/app-debug.apk
 
 ### 👤 Identitas Mahasiswa
 
-| Informasi | Keterangan |
-| :--- | :--- |
-| **Nama Lengkap** | Keira Arina Khalisha |
-| **NIM** | 1247050056 |
-| **Kelas** | IF B |
-| **Mata Kuliah** | Pengembangan Aplikasi Mobile (PAM) |
-| **Dosen Pengampu** | H.,Aldy Rialdy Atmadja,M.T |
+| Informasi          | Keterangan                         |
+|:-------------------|:-----------------------------------|
+| **Nama Lengkap**   | Keira Arina Khalisha               |
+| **NIM**            | 1247050056                         |
+| **Kelas**          | IF B                               |
+| **Mata Kuliah**    | Pengembangan Aplikasi Mobile (PAM) |
+| **Dosen Pengampu** | H.,Aldy Rialdy Atmadja,M.T         |
 
 ### 📋 Pemenuhan Ketentuan Tugas
 
-| No | Ketentuan Dosen | Status | Keterangan Implementasi |
-| :---: | :--- | :---: | :--- |
-| 1 | Seluruh tampilan wireframe (Splash, Sign Up, Login, Register, Home, Profile, Alamat, Konfirmasi) | ✅ Selesai | 8 layar terimplementasi penuh dengan Compose |
-| 2 | Menggunakan data statis / dummy (tanpa database) | ✅ Selesai | In-memory reactive state (`AppState`, `dummyMenu`, `User`) |
-| 3 | Desain modern, menarik, dan mudah digunakan | ✅ Selesai | Desain bertema *warm cafe* berbasis Material 3 |
-| 4 | Bottom navigation (opsional/fleksibel) | ✅ Selesai | `NavigationBar` dengan indikator badge keranjang dinamis |
-| 5 | Daftar makanan/minuman minimal 5 item | ✅ Selesai | Terdapat 10 item menu berkategori (Kopi, Teh, Roti, Dessert) |
-| 6 | README berisi deskripsi, fitur, teknologi, cara running, & screenshot | ✅ Selesai | Terdokumentasi lengkap dalam file `README.md` |
+| No | Ketentuan Dosen                                                                                  |   Status   | Keterangan Implementasi                                      |
+|:--:|:-------------------------------------------------------------------------------------------------|:----------:|:-------------------------------------------------------------|
+| 1  | Seluruh tampilan wireframe (Splash, Sign Up, Login, Register, Home, Profile, Alamat, Konfirmasi) | ✅ Selesai | 8 layar terimplementasi penuh dengan Compose                 |
+| 2  | Menggunakan data statis / dummy (tanpa database)                                                 | ✅ Selesai | In-memory reactive state (`AppState`, `dummyMenu`, `User`)   |
+| 3  | Desain modern, menarik, dan mudah digunakan                                                      | ✅ Selesai | Desain bertema *warm cafe* berbasis Material 3               |
+| 4  | Bottom navigation (opsional/fleksibel)                                                           | ✅ Selesai | `NavigationBar` dengan indikator badge keranjang dinamis     |
+| 5  | Daftar makanan/minuman minimal 5 item                                                            | ✅ Selesai | Terdapat 10 item menu berkategori (Kopi, Teh, Roti, Dessert) |
+| 6  | README berisi deskripsi, fitur, teknologi, cara running, & screenshot                            | ✅ Selesai | Terdokumentasi lengkap dalam file `README.md`                |
 
 ---
 

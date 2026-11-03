@@ -32,10 +32,24 @@ class AppState {
         if (qty <= 0) cart.remove(item.id) else cart[item.id] = qty
     }
 
-    fun logout() {
-        currentUser = null
+    fun clearCartAndReceipt() {
         cart.clear()
         lastReceipt = null
+    }
+
+    fun updateProfile(fullName: String, newUsername: String) {
+        val oldUser = currentUser ?: return
+        val updatedUser = oldUser.copy(fullName = fullName, username = newUsername)
+        val index = users.indexOf(oldUser)
+        if (index != -1) {
+            users[index] = updatedUser
+        }
+        currentUser = updatedUser
+    }
+
+    fun logout() {
+        currentUser = null
+        clearCartAndReceipt()
         screen = Screen.SignUp
     }
 }
@@ -54,12 +68,15 @@ fun KopiApp() {
     val name = state.currentUser?.fullName ?: ""
 
     BackHandler(enabled = state.screen != Screen.Splash) {
-        state.screen = when (state.screen) {
-            Screen.SignUp -> Screen.Splash
-            Screen.Login, Screen.Register -> Screen.SignUp
-            Screen.Order, Screen.Profile -> Screen.Home
-            Screen.Confirm -> Screen.Home
-            else -> state.screen
+        when (state.screen) {
+            Screen.SignUp -> state.screen = Screen.Splash
+            Screen.Login, Screen.Register -> state.screen = Screen.SignUp
+            Screen.Order, Screen.Profile -> state.screen = Screen.Home
+            Screen.Confirm -> {
+                state.clearCartAndReceipt()
+                state.screen = Screen.Home
+            }
+            else -> {}
         }
     }
 
@@ -88,8 +105,7 @@ fun KopiApp() {
         }
 
         Screen.Confirm -> ConfirmScreen(receipt = state.lastReceipt) {
-            state.cart.clear()
-            state.lastReceipt = null
+            state.clearCartAndReceipt()
             state.screen = Screen.Home
         }
 
@@ -140,17 +156,7 @@ fun KopiApp() {
                         Tab.Profile -> ProfileScreen(
                             user = state.currentUser,
                             existingUsers = state.users,
-                            onSave = { fullName, newUsername ->
-                                val oldUser = state.currentUser
-                                val updatedUser = oldUser?.copy(fullName = fullName, username = newUsername)
-                                if ((oldUser != null) && (updatedUser != null)) {
-                                    val index = state.users.indexOf(oldUser)
-                                    if (index != -1) {
-                                        state.users[index] = updatedUser
-                                    }
-                                    state.currentUser = updatedUser
-                                }
-                            },
+                            onSave = state::updateProfile,
                             onLogout = state::logout,
                         )
                     }
