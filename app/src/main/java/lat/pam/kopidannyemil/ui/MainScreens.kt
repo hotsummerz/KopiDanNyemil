@@ -396,7 +396,7 @@ fun ConfirmScreen(receipt: OrderReceipt?, onOk: () -> Unit) {
         )
         Spacer(Modifier.height(6.dp))
         Text(
-            "Terima kasih! Kurir kami akan segera mengantar pesananmu :)",
+            "Kurir kami akan segera mengantar pesananmu :)",
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray,

@@ -139,7 +139,6 @@ Untuk memudahkan proses pengujian dan evaluasi, akun demo berikut sudah terdafta
 | :--- | :--- |
 | **Username** | `Keira` |
 | **Password** | `123abc` |
-| **Nama Lengkap** | Keira Arina |
 
 > **Catatan:** Anda juga dapat menggunakan fitur **Register** untuk mendaftarkan akun baru dengan data bebas saat aplikasi berjalan.
 
@@ -201,13 +200,6 @@ app/build/outputs/apk/debug/app-debug.apk
 
 ---
 
-## 📝 Catatan Tugas Kuliah
-
-Proyek ini disusun untuk memenuhi **Tugas Ujian Tengah Semester (UTS)**:
-- **Mata Kuliah**: Pengembangan Aplikasi Mobile (PAM)
-- **Program Studi**: Teknik Informatika - Semester 5
-- **Topik**: Implementasi UI Modern dengan Jetpack Compose, Navigasi Multi-Screen, State Management, dan Form Validation pada Android.
-
 ### 👤 Identitas Mahasiswa
 
 | Informasi | Keterangan |
@@ -215,6 +207,7 @@ Proyek ini disusun untuk memenuhi **Tugas Ujian Tengah Semester (UTS)**:
 | **Nama Lengkap** | Keira Arina Khalisha |
 | **NIM** | 1247050056 |
 | **Kelas** | IF B |
+| **Mata Kuliah** | Pengembangan Aplikasi Mobile (PAM) |
 | **Dosen Pengampu** | H.,Aldy Rialdy Atmadja,M.T |
 
 ### 📋 Pemenuhan Ketentuan Tugas
